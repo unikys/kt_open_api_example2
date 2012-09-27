@@ -67,7 +67,7 @@ public class KTOpenApiGUI extends JFrame{
 
 	private void renderToolBar() {
 		JToolBar toolbar = new JToolBar();
-		toolbar.setFloatable(false);
+		toolbar.setFloatable(true);
 		
 		ArrayList<JButton> toolbarButtonList = new ArrayList<JButton>();
 		
@@ -101,8 +101,63 @@ public class KTOpenApiGUI extends JFrame{
 			}
 		});
 
+		JButton buttonConferenceCall = new JButton("회의 통화");
+		toolbarButtonList.add(buttonConferenceCall);
+		buttonConferenceCall.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				JOptionPane.showMessageDialog(null, "구현 필요!");
+			}
+		});
+
+		JButton buttonConferenceCallAdd = new JButton("회의 통화 추가");
+		toolbarButtonList.add(buttonConferenceCallAdd);
+		buttonConferenceCallAdd.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				JOptionPane.showMessageDialog(null, "구현 필요!");
+			}
+		});
+
+		JButton buttonConferenceCallBan = new JButton("회의 통화 퇴장");
+		toolbarButtonList.add(buttonConferenceCallBan);
+		buttonConferenceCallBan.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				JOptionPane.showMessageDialog(null, "구현 필요!");
+			}
+		});
+
+		JButton buttonConferenceCallAttendance = new JButton("회의 통화 조회");
+		toolbarButtonList.add(buttonConferenceCallAttendance);
+		buttonConferenceCallAttendance.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				JOptionPane.showMessageDialog(null, "구현 필요!");
+			}
+		});
 
 		
+		JButton buttonSetupNumberNotification = new JButton("발신 번호 통보 등록");
+		toolbarButtonList.add(buttonSetupNumberNotification);
+		buttonSetupNumberNotification.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				JOptionPane.showMessageDialog(null, "구현 필요!");
+			}
+		});
+
+		
+		JButton buttonSendSMS = new JButton("단문 송신");
+		toolbarButtonList.add(buttonSendSMS);
+		buttonSendSMS.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				JOptionPane.showMessageDialog(null, "구현 필요!");
+			}
+		});
+
+
 		for(JButton button : toolbarButtonList)
 			toolbar.add(button);
 		
