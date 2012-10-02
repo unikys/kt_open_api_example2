@@ -8,7 +8,9 @@ public class KTOpenApiExample {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		KTOpenApiManager apiManager = new KTOpenApiManager("8dfad1945247e11e7f7d813647a3516b", "c65453cf50d82f0865ed747b2f3b76fe"); 
+				
+		KTOpenApiManager apiManager = new KTOpenApiManager("6a791ca4c001eecc00b51a55942b9f31", "245888223ba778d95ba4db65ac7d848c" , "hwi73338401" , "8401"); 
+		
 		new KTOpenApiGUI(apiManager);
 
 	}

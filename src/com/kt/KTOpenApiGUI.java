@@ -3,17 +3,22 @@ package com.kt;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
+import com.kt.api.KTOpenApiId;
 import com.kt.api.KTOpenApiManager;
 
 public class KTOpenApiGUI extends JFrame{
@@ -27,6 +32,20 @@ public class KTOpenApiGUI extends JFrame{
 	JPanel mainPanel;
 	JLabel labelStatusBar;
 	JLabel labelUser;
+	
+	JPanel paneClick2CallInterface;
+	JTextField textCallee;
+	JTextField textCaller;
+	JTextField textClick2CallCallbackUrl;
+	
+	JPanel paneCIDInterface;
+	JTextField textCIDCallbackUrl;
+	
+	JPanel paneSMSInterface;
+	JTextField textSender;
+	JTextField textReceiver;
+	JTextField textDisplayAddress;
+	JTextArea textSMS;
 
 	public KTOpenApiGUI(KTOpenApiManager apiManager)
 	{
@@ -40,13 +59,137 @@ public class KTOpenApiGUI extends JFrame{
 
 		Container contentPane = this.getContentPane();
 		mainPanel = new JPanel(new BorderLayout());
+		
 
 		this.renderStatusBar();
 		this.renderToolBar();
 		
+		
+		this.renderClick2CallPane();
+		this.renderCIDPane();
+		this.renderSMSPane();
+		
 		contentPane.add(mainPanel , BorderLayout.CENTER);
 
 		this.setVisible(true);
+	}
+	
+	
+	private void renderSMSPane() {
+		paneSMSInterface = new JPanel(new FlowLayout());
+		
+		textSender = new JTextField(25);
+		textReceiver = new JTextField(25);
+		textDisplayAddress = new JTextField(20);
+		textSMS = new JTextArea(1,25);
+		textSMS.setText("This is an Open-API test message.");
+		textSMS.setEditable(false);
+
+		paneSMSInterface.add(new JLabel("Sender"));
+		paneSMSInterface.add(textSender);
+		paneSMSInterface.add(new JLabel("Receiver"));
+		paneSMSInterface.add(textReceiver);
+		paneSMSInterface.add(new JLabel("DisplayAddress"));
+		paneSMSInterface.add(textDisplayAddress);
+		
+		paneSMSInterface.add(new JLabel("SMS Text"));
+		paneSMSInterface.add(textSMS);
+		JButton buttonSendSMS = new JButton("Send SMS");
+		paneSMSInterface.add(buttonSendSMS);
+		
+		buttonSendSMS.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				HashMap<String, String> params = new HashMap<String, String>();
+				String sender = textSender.getText();
+				String receiver = textReceiver.getText();
+				String text = textSMS.getText();
+				String displayAddress = textDisplayAddress.getText();
+				if(sender.trim().isEmpty() || receiver.trim().isEmpty() || text.trim().isEmpty() || displayAddress.trim().isEmpty())
+				{
+					JOptionPane.showMessageDialog(null, "ÌïÑÏàò Ï†ïÎ≥¥Î•º ÏûÖÎ†•ÌïòÏßÄ ÏïäÏïòÏäµÎãàÎã§.");
+					return;
+				}
+				params.put("sender", sender);
+				params.put("receivers", receiver);
+				params.put("displayAddress", displayAddress);
+				params.put("text", text);
+				
+				
+				apiManager.apiCall(KTOpenApiId.SMS_MAKE , params);
+			}
+		});
+	}
+
+
+	private void renderCIDPane() {
+		paneCIDInterface = new JPanel(new FlowLayout());
+
+		textCIDCallbackUrl = new JTextField(40);
+		paneCIDInterface.add(new JLabel("Callback Url"));
+		paneCIDInterface.add(textCIDCallbackUrl);
+		
+		JButton buttonSetCIDNoti = new JButton("Set CID Noti");
+		paneCIDInterface.add(buttonSetCIDNoti);
+		
+		buttonSetCIDNoti.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				HashMap<String, String> params = new HashMap<String, String>();
+				String callbackUrl = textCIDCallbackUrl.getText();
+				if(callbackUrl.trim().isEmpty())
+				{
+					JOptionPane.showMessageDialog(null, "ÌïÑÏàò Ï†ïÎèÑÎ•º ÏûÖÎ†•ÌïòÏßÄ ÏïäÏïòÏäµÎãàÎã§.");
+					return;
+				}
+				params.put("callback_url", callbackUrl); // callbackÔøΩÔøΩÔøΩÔøΩ urlÔøΩ‘∑ÔøΩ
+				
+				apiManager.apiCall(KTOpenApiId.CID_SET_NOTI , params);
+				
+			}
+		});
+
+	}
+
+
+	private void renderClick2CallPane()
+	{
+		paneClick2CallInterface = new JPanel(new FlowLayout());
+
+		textCallee = new JTextField(20);
+		paneClick2CallInterface.add(new JLabel("Callee"));
+		paneClick2CallInterface.add(textCallee);
+
+		textCaller = new JTextField(20);
+		paneClick2CallInterface.add(new JLabel("Caller"));
+		paneClick2CallInterface.add(textCaller);
+		JButton buttonClick2Call = new JButton("Click 2 Call");
+		paneClick2CallInterface.add(buttonClick2Call);
+		textClick2CallCallbackUrl = new JTextField(30);
+		paneClick2CallInterface.add(new JLabel("Callback URL"));
+		paneClick2CallInterface.add(textClick2CallCallbackUrl);
+		
+		buttonClick2Call.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				HashMap<String, String> params = new HashMap<String, String>();
+				String caller = textCaller.getText();
+				String callee = textCallee.getText();
+				String callbackUrl = textClick2CallCallbackUrl.getText();
+				if(caller.trim().isEmpty() || callee.trim().isEmpty() || callbackUrl.trim().isEmpty())
+				{
+					JOptionPane.showMessageDialog(null, "ÌïÑÏàò Ï†ïÎ≥¥Î•º ÏûÖÎ†•ÌïòÏßÄ ÏïäÏïòÏäµÎãàÎã§.");
+					return;
+				}
+				params.put("caller", caller);
+				params.put("callee", callee);
+				params.put("cb_method", "url");
+				params.put("cb_trgt_info", callbackUrl); 
+				params.put("cb_format", ""); 
+				params.put("callee_first",""); 
+				apiManager.apiCall(KTOpenApiId.CLICK_2_CALL_MAKE , params);
+			}
+		});
 	}
 	
 	
@@ -72,88 +215,60 @@ public class KTOpenApiGUI extends JFrame{
 		ArrayList<JButton> toolbarButtonList = new ArrayList<JButton>();
 		
 		
-		JButton buttonLogin = new JButton("API ø¨∞·");
+		JButton buttonLogin = new JButton("API Ïó∞Í≤∞");
 		toolbarButtonList.add(buttonLogin);
 		buttonLogin.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				JOptionPane.showMessageDialog(null, "±∏«ˆ « ø‰!");
+				if(apiManager.connect())
+				{
+					setStatus("Ïó∞Í≤∞ Îê®");
+				}else
+				{
+					setStatus("Ïó∞Í≤∞ Ïã§Ìå®");
+				}
 			}
 		});
 		
 		
-		JButton buttonClick2Call = new JButton("≈¨∏Ø≈ıƒ›");
+		JButton buttonClick2Call = new JButton("ÌÅ¥Î¶≠Ìà¨ÏΩú");
 		toolbarButtonList.add(buttonClick2Call);
 		buttonClick2Call.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				JOptionPane.showMessageDialog(null, "±∏«ˆ « ø‰!");
+				mainPanel.remove(paneSMSInterface);
+				mainPanel.remove(paneCIDInterface);
+				mainPanel.add(paneClick2CallInterface , BorderLayout.CENTER);
+				mainPanel.revalidate();
+				repaint();
 			}
 		});
 
 
-		JButton buttonClick2CallResult = new JButton("≈¨∏Ø≈ıƒ› ∞·∞˙ ¡∂»∏");
-		toolbarButtonList.add(buttonClick2CallResult);
-		buttonClick2CallResult.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				JOptionPane.showMessageDialog(null, "±∏«ˆ « ø‰!");
-			}
-		});
-
-		JButton buttonConferenceCall = new JButton("»∏¿« ≈Î»≠");
-		toolbarButtonList.add(buttonConferenceCall);
-		buttonConferenceCall.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				JOptionPane.showMessageDialog(null, "±∏«ˆ « ø‰!");
-			}
-		});
-
-		JButton buttonConferenceCallAdd = new JButton("»∏¿« ≈Î»≠ √ﬂ∞°");
-		toolbarButtonList.add(buttonConferenceCallAdd);
-		buttonConferenceCallAdd.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				JOptionPane.showMessageDialog(null, "±∏«ˆ « ø‰!");
-			}
-		});
-
-		JButton buttonConferenceCallBan = new JButton("»∏¿« ≈Î»≠ ≈¿Â");
-		toolbarButtonList.add(buttonConferenceCallBan);
-		buttonConferenceCallBan.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				JOptionPane.showMessageDialog(null, "±∏«ˆ « ø‰!");
-			}
-		});
-
-		JButton buttonConferenceCallAttendance = new JButton("»∏¿« ≈Î»≠ ¡∂»∏");
-		toolbarButtonList.add(buttonConferenceCallAttendance);
-		buttonConferenceCallAttendance.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				JOptionPane.showMessageDialog(null, "±∏«ˆ « ø‰!");
-			}
-		});
-
-		
-		JButton buttonSetupNumberNotification = new JButton("πﬂΩ≈ π¯»£ ≈Î∫∏ µÓ∑œ");
+		JButton buttonSetupNumberNotification = new JButton("Î∞úÏã† Î≤àÌò∏ ÏÑ§Ï†ï");
 		toolbarButtonList.add(buttonSetupNumberNotification);
 		buttonSetupNumberNotification.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				JOptionPane.showMessageDialog(null, "±∏«ˆ « ø‰!");
+				mainPanel.remove(paneSMSInterface);
+				mainPanel.remove(paneClick2CallInterface);
+				mainPanel.add(paneCIDInterface , BorderLayout.CENTER);
+				mainPanel.revalidate();
+				repaint();
 			}
 		});
 
 		
-		JButton buttonSendSMS = new JButton("¥‹πÆ º€Ω≈");
+		JButton buttonSendSMS = new JButton("Îã®Î¨∏ ÏÜ°Ïã†");
 		toolbarButtonList.add(buttonSendSMS);
 		buttonSendSMS.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				JOptionPane.showMessageDialog(null, "±∏«ˆ « ø‰!");
+				mainPanel.remove(paneClick2CallInterface);
+				mainPanel.remove(paneCIDInterface);
+				mainPanel.add(paneSMSInterface , BorderLayout.CENTER);
+				mainPanel.revalidate();
+				repaint();
 			}
 		});
 
